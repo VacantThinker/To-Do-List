@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>To-Do List</title>
+    <style>
+        #input-task {
+
+        }
+
+        .line {
+            text-decoration: line-through;
+        }
+    </style>
+
+</head>
+<body>
+<h1>To-Do List</h1>
+<div>
+    <input id="input-task" type="text">
+    <button id="add-task-button">ADD</button>
+    <ul id="task-list">
+    </ul>
+
+<!--    <li>-->
+<!--        <input type="checkbox">-->
+<!--        <span class="task">eat</span>-->
+<!--        <button class="delete-btn"></button>-->
+<!--    </li>-->
+<!--    <li>-->
+<!--        <input type="checkbox">-->
+<!--        <span class="task">study</span>-->
+<!--        <button class="delete-btn"></button>-->
+<!--    </li>-->
+<!--    <li>-->
+<!--        <input type="checkbox">-->
+<!--        <span class="task">sleep</span>-->
+<!--        <button class="delete-btn"></button>-->
+<!--    </li>-->
+
+</div>
+<script>
+    <!--    init taskList store -->
+    let taskList = [];
+    if (localStorage.getItem("tasks") !== null) {
+        taskList = JSON.parse(localStorage.getItem("tasks"));
+        console.log(taskList);
+    } else {
+        taskList = [
+            {"num": 0, "input": 1, "text": "text1"},
+            {"num": 1, "input": 0, "text": "text2"},
+            {"num": 2, "input": 0, "text": "text3"}
+        ];
+        localStorage.setItem("tasks", JSON.stringify(taskList));
+    }
+
+    // let tlist = JSON.parse(localStorage.getItem("tasks")) || [];
+    taskList.forEach((task, index) => {
+
+        if (task != null) {
+            let htmlliElement = document.createElement("li");
+            let htmlInputElement = document.createElement("input");
+            htmlInputElement.setAttribute("type", "checkbox");
+            htmlInputElement.addEventListener("click", function () {
+                let parentElement = this.parentElement;
+                parentElement.querySelector("span.task").classList.toggle("line");
+                console.log(tmpItem);
+                if (tmpItem.input === 1) {
+                    tmpItem.input = 0;
+                } else {
+                    tmpItem.input = 1
+                }
+                taskList[index] = tmpItem;
+                localStorage.setItem("tasks", JSON.stringify(taskList));
+                let t = JSON.parse(localStorage.getItem("tasks")) || [];
+                console.log(t);
+            });
+
+            let htmlSpanElement = document.createElement("span");
+            htmlSpanElement.setAttribute("class", "task");
+            htmlSpanElement.textContent = task.text;
+
+            let htmlButtonElement = document.createElement("button");
+            htmlButtonElement.setAttribute("class", "delete-btn");
+            htmlliElement.appendChild(htmlInputElement);
+            htmlliElement.appendChild(htmlSpanElement);
+            htmlliElement.appendChild(htmlButtonElement);
+
+            document.getElementById("task-list").appendChild(htmlliElement);
+
+            let tmpItem = taskList[index];
+            if (tmpItem.input !== 0) {
+                htmlliElement.querySelector("input").setAttribute("checked", "");
+                htmlliElement.querySelector("span.task").classList.toggle("line");
+            }
+
+            htmlButtonElement.addEventListener("click", function () {
+                let parentElement = this.parentElement;
+                document.getElementById("task-list").removeChild(parentElement);
+                console.log(taskList);
+                taskList[index] = null;
+                console.log(taskList);
+                localStorage.setItem("tasks", JSON.stringify(taskList));
+
+            });
+
+        }
+
+    });
+
+    document.getElementById("add-task-button").addEventListener("click", function () {
+        let htmlliElement = document.createElement("li");
+        let htmlInputElement = document.createElement("input");
+        htmlInputElement.setAttribute("type", "checkbox");
+        htmlInputElement.addEventListener("click", function () {
+            let parentElement = this.parentElement;
+            parentElement.querySelector("span.task").classList.toggle("line");
+        });
+
+        let htmlSpanElement = document.createElement("span");
+        htmlSpanElement.setAttribute("class", "task");
+        htmlSpanElement.textContent = document.getElementById("input-task").value;
+
+        let htmlButtonElement = document.createElement("button");
+        htmlButtonElement.setAttribute("class", "delete-btn");
+        htmlliElement.appendChild(htmlInputElement);
+        htmlliElement.appendChild(htmlSpanElement);
+        htmlliElement.appendChild(htmlButtonElement);
+
+        document.getElementById("task-list").appendChild(htmlliElement);
+
+        document.getElementById("input-task").value = "";
+
+        // console.log(taskList);
+        let numOfLast = taskList[taskList.length - 1];
+        taskList.push({"num": Number(numOfLast), "input": 0, "text": "New task for the test purpose"});
+        // console.log(taskList);
+        localStorage.setItem("tasks", JSON.stringify(taskList));
+
+        htmlButtonElement.addEventListener("click", function () {
+            let parentElement = this.parentElement;
+            document.getElementById("task-list").removeChild(parentElement);
+            console.log(taskList);
+            taskList[Number(numOfLast)] = null;
+            console.log(taskList);
+            localStorage.setItem("tasks", JSON.stringify(taskList));
+        });
+
+    });
+</script>
+</body>
+</html>
